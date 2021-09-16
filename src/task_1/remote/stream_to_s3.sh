@@ -9,7 +9,7 @@ set +a
 
 # Create Buckets - creating a log file in case of issues
 # Buckets are public since this is free data. Beware of security issues.
-STAGING=$S3_BUCKET_NAME-sts
+STAGING=$S3_BUCKET_NAME-staging
 
 echo "Creating bucket "$STAGING""
 aws s3api create-bucket --acl public-read-write --bucket $STAGING --output text > setup.log
