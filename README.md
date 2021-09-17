@@ -49,9 +49,6 @@ Simply `pip install pyspark` in your environment will be enough to get a copy
 installed locally. It is recommended to use a virtual environment for this step
 of the process.
 
-To begin using it, you write `pyspark` in your local shell to start a local
-instance.
-
 #### Amazon Web Services (AWS)
 
 If you would like to follow the remote code, you will need to have an active AWS
@@ -66,12 +63,11 @@ settings.
 NOTE: All code expects the working directory set to the project. As mentioned
 above, it is a good idea to create a virtual env to run project code.
 
-Under the src directory, I have a directory for each task. There will be 2 sets
-of files which you can run, local & remote. These showcase how I would use these
-tools both in a local capacity and as well using cloud technologies.
+NOTE2: The shell code assumes you are on the newer Z shell (Like a newer Mac). 
 
-This ask requires us to download the data from the Denver Gov't website &
-prepare for the next set of tasks.
+Under the src directory, There will be 2 sets of files which you can run, 
+local & remote. Under each, I have a directory for each task. These showcase 
+how I would use these tools both in a local capacity and as well using cloud technologies.
 
 #### Local:
 
@@ -80,15 +76,13 @@ zsh src/task_1/local/dl_local.sh
 ```
 
 This will download the datasets to your local machine under the
-`/data/takehome-raw` directory. Out of the box, the shell can download large
-(> 1GB) files without complaint. This is reliant on your local internet
-connection.
+`/data/takehome-staging` directory. 
 
 #### Remote:
 
 The remote version of this code would instead of sending this data to our local
-machine place itself into an S3 bucket. You can set the bucket name of your
-implementation under the `.env` file.
+machine place itself into an S3 bucket. Under the `config.json` you can find 
+the naming convention used by this project. 
 
 ```shell
 zsh src/task_1/local/stream_to_s3.sh
@@ -115,7 +109,7 @@ Spark workloads.
 #### Local
 
 Our local implementation uses Spark to convert the data files into parquet files
-located at `data/takehome-converted`.
+located at `data/takehome-process`.
 
 ```zsh
 spark-submit --master "local[3]" src/task_2/local/create_datastore.py
@@ -135,7 +129,7 @@ up a small AWS EMR cluster to run our data jobs. The primary steps are:
 3. Submit the pyspark scripts to our running EMR cluster. 
 4. Shut down the EMR when the transforms are complete. 
 
-I've combined the setup steps into a helper shell script. 
+I've combined the setup steps (1-3) into a helper shell script. 
 ```shell
 zsh src/remote/task_2/setup/setup.sh
 ```
@@ -156,7 +150,12 @@ zsh src/remote/task_2/setup/4_teardown.sh
 
 ### Task 3 
 
-### Conclusions/Areas for Improvment
+The final task is query our datasets and provide insights into the data. 
+
+### Conclusions/Areas for Improvement
+
+The major area for improvement on this project would be to use some kind of 
+scheduling service to make this 
 
 
 

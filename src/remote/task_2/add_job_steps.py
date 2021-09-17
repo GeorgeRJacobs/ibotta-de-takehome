@@ -4,8 +4,6 @@ import argparse
 import json
 import logging
 import datetime
-import os
-
 import boto3
 from botocore.exceptions import ClientError
 
@@ -21,14 +19,16 @@ def main():
     """
     # Loads most recent cluster created
     # Requires the start_emr script to run.
-    with open('cluster_profile.json') as f:
-        cl_dict = json.load(f)
+    clusters = emr_client.list_clusters(CreatedAfter=datetime.datetime.today(),
+                                        ClusterStates=['RUNNING'])
+    cluster_id = [cluster for cluster in clusters.get('Clusters') if cluster.get('Name') == 'detakehome_process'][
+        0].get('Id')
 
     args = parse_args()
     params = get_parameters()
     steps = get_steps(params, args.job_type)
 
-    add_job_flow_steps(cl_dict['ClusterId'], steps)
+    add_job_flow_steps(cluster_id, steps)
 
 
 def add_job_flow_steps(cluster_id: str, steps: list) -> bool:
