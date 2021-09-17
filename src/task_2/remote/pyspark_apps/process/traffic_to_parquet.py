@@ -17,14 +17,14 @@ def main():
 
 
 def convert_to_parquet(spark, file, args):
-    df_bakery = spark.read \
+    df = spark.read \
         .format("csv") \
         .option("header", "true") \
         .option("delimiter", ",") \
         .option("inferSchema", "true") \
         .load(f"s3a://{args.bronze_bucket}/{args.exec_date}/{file}.csv")
 
-    df_bakery.write \
+    df.write \
         .format("parquet") \
         .save(f"s3a://{args.silver_bucket}/{args.exec_date}/traffic_accidents/", mode="overwrite")
 
