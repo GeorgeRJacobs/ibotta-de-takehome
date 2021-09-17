@@ -27,7 +27,7 @@ def convert_to_parquet(spark, file, args):
     col_names = ["_".join(x.lower().split()) for x in df.schema.names]
     df2 = df.toDF(*col_names)
 
-    df.write \
+    df2.write \
         .format("parquet") \
         .save(f"s3a://{args.silver_bucket}/{args.exec_date}/traffic_accidents/", mode="overwrite")
 
