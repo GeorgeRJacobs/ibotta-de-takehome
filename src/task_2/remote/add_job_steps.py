@@ -26,7 +26,7 @@ def main():
 
     args = parse_args()
     params = get_parameters()
-    steps = get_steps(params)
+    steps = get_steps(params, args.job_type)
 
     add_job_flow_steps(cl_dict['ClusterId'], steps)
 
