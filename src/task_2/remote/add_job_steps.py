@@ -95,24 +95,5 @@ def parse_args():
     return args
 
 
-def get_steps(params, job_type):
-    """
-    Load EMR Steps from a separate JSON-format file and substitutes tags for SSM parameter values
-    """
-
-    dir_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-    file = open(f'{dir_path}/job_flow_steps/job_flow_steps_{job_type}.json', 'r')
-
-    steps = json.load(file)
-    new_steps = []
-
-    for step in steps:
-        step['HadoopJarStep']['Args'] = list(
-            map(lambda st: str.replace(st, '{{ work_bucket }}', params['work_bucket']), step['HadoopJarStep']['Args']))
-        new_steps.append(step)
-
-    return new_steps
-
-
 if __name__ == '__main__':
     main()
