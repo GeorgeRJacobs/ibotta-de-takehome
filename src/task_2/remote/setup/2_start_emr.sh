@@ -41,7 +41,7 @@ aws emr create-cluster --applications Name=Spark Name=Zeppelin \
     "InstanceType": "m4.xlarge",
     "Name": "Core Instance Group"
   }
-  ]' > cluster_profile.txt
+  ]' > cluster_profile.json
 
 echo "Cluster ID Profile Variable"
 cat cluster_profile.txt | python3 -c "import sys, json; print(json.load(sys.stdin)['ClusterId'])"

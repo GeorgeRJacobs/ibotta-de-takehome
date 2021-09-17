@@ -3,6 +3,7 @@
 import argparse
 import json
 import logging
+import datetime
 import os
 
 import boto3
@@ -18,11 +19,16 @@ def main():
     Performs the main update logic.
     :return:
     """
+    # Loads most recent cluster created
+    # Requires the start_emr script to run.
+    with open('cluster_profile.json') as f:
+        cl_dict = json.load(f)
+
     args = parse_args()
     params = get_parameters()
-    steps = get_steps(params, args.job_type)
+    steps = get_steps(params)
 
-    add_job_flow_steps(params['cluster_id'], steps)
+    add_job_flow_steps(cl_dict['ClusterId'], steps)
 
 
 def add_job_flow_steps(cluster_id: str, steps: list) -> bool:
@@ -50,38 +56,33 @@ def get_steps(params: dict, job_type: str):
     """
     Loads the steps from the JSON file
     :param params: Dictates various parameters associated with the job.
-    :param job_type:
-    :return:
+    :param job_type: What kind of json are we running
+    :return: List of the steps to be sent to the EMR cluster
     """
 
-    # Generates correct file path. Magic.
-    dir_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-    with open(f'{dir_path}/job_flow_steps/job_flow_steps_{job_type}.json', 'r') as file:
+    # Set arguments to be passed to the JSON files.
+    params['exec_date'] = datetime.date.today().strftime("%Y-%m-%d")
+    with open(f'src/task_2/remote/job_steps/jobs_{job_type}.json', 'r') as file:
         steps = json.load(file)
         new_steps = []
-
         for step in steps:
             step['HadoopJarStep']['Args'] = list(
-                map(lambda st: str.replace(st, '{{ work_bucket }}', params['work_bucket']),
-                    step['HadoopJarStep']['Args']))
+                map(lambda x: x.format(**params), step['HadoopJarStep']['Args']))
             new_steps.append(step)
 
         return new_steps
 
 
-def get_parameters():
+def get_parameters() -> dict:
     """
-    Grabs relevant bucket & cluster info for preparing the steps.
-    :return:
+    Loads configuration variables for the task.
+    :return: Dictionary of values
     """
 
+    with open('config.json') as f:
+        config = json.load(f)
 
-    params = {
-        'work_bucket': ssm_client.get_parameter(Name='/emr_demo/work_bucket')['Parameter']['Value'],
-        'cluster_id': ssm_client.get_parameter(Name='/emr_demo/cluster_id')['Parameter']['Value']
-    }
-
-    return params
+    return config
 
 
 def parse_args():
@@ -92,6 +93,25 @@ def parse_args():
                         help='process or analysis')
     args = parser.parse_args()
     return args
+
+
+def get_steps(params, job_type):
+    """
+    Load EMR Steps from a separate JSON-format file and substitutes tags for SSM parameter values
+    """
+
+    dir_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+    file = open(f'{dir_path}/job_flow_steps/job_flow_steps_{job_type}.json', 'r')
+
+    steps = json.load(file)
+    new_steps = []
+
+    for step in steps:
+        step['HadoopJarStep']['Args'] = list(
+            map(lambda st: str.replace(st, '{{ work_bucket }}', params['work_bucket']), step['HadoopJarStep']['Args']))
+        new_steps.append(step)
+
+    return new_steps
 
 
 if __name__ == '__main__':

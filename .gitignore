@@ -2,3 +2,4 @@
 *.csv
 .idea
 /cluster_profile.txt
+/cluster_profile.json

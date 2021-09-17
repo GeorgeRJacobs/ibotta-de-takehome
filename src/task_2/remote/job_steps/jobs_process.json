@@ -12,7 +12,13 @@
         "yarn",
         "--conf",
         "spark.yarn.submit.waitAppCompletion=true",
-        "s3a://{{ work_bucket }}/process/csv_to_parquet.py"
+        "s3a://{work_bucket}/process/service_to_parquet.py.py",
+        "--exec-date",
+        "{exec_date}",
+        "--bronze-bucket",
+        "{bronze_bucket}",
+        "--silver-bucket",
+        "{silver_bucket}"
       ]
     }
   },
@@ -29,8 +35,14 @@
         "yarn",
         "--conf",
         "spark.yarn.submit.waitAppCompletion=true",
-        "s3a://{{ work_bucket }}/process/movies_csv_to_parquet_ssm.py"
+        "s3a://{work_bucket}/process/traffic_to_parquet.py.py",
+        "--exec-date",
+        "{exec_date}",
+        "--bronze-bucket",
+        "{bronze_bucket}",
+        "--silver-bucket",
+        "{silver_bucket}"
       ]
     }
-  },
+  }
 ]
