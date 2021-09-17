@@ -130,9 +130,24 @@ threads to process your application.
 The primary difference of the remote implementation is that we will be setting
 up a small AWS EMR cluster to run our data jobs. The primary steps are:
 
-1. Create & setup an EMR cluster on AWS.
-2. Once started, submit spark job to convert the S3 csv to HDFS as a parquet
-   file. 
+1. Create & setup an EMR cluster on AWS. This takes ~10 min to start up. 
+2. Create additional buckets to hold logs and our pyspark scripts.
+3. Submit the pyspark scripts to our running EMR cluster. 
+
+I've combined the setup steps into a helper shell script. 
+```shell
+zsh src/remote/task_2/setup/setup.sh
+```
+
+Once the setup is complete, you can go ahead and send our jobs to the EMR 
+cluster. 
+
+```shell
+python3 src/remote/task_2/add_job_steps.py
+```
+
+You can check the status of the jobs under the UI in AWS Management Console. 
+
 
 
 
