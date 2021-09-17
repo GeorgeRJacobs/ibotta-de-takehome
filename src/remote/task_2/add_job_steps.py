@@ -62,7 +62,7 @@ def get_steps(params: dict, job_type: str):
 
     # Set arguments to be passed to the JSON files.
     params['exec_date'] = datetime.date.today().strftime("%Y-%m-%d")
-    with open(f'src/task_2/remote/job_steps/jobs_{job_type}.json', 'r') as file:
+    with open(f'src/remote/task_2/job_steps/jobs_{job_type}.json', 'r') as file:
         steps = json.load(file)
         new_steps = []
         for step in steps:
