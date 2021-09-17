@@ -133,6 +133,7 @@ up a small AWS EMR cluster to run our data jobs. The primary steps are:
 1. Create & setup an EMR cluster on AWS. This takes ~10 min to start up. 
 2. Create additional buckets to hold logs and our pyspark scripts.
 3. Submit the pyspark scripts to our running EMR cluster. 
+4. Shut down the EMR when the transforms are complete. 
 
 I've combined the setup steps into a helper shell script. 
 ```shell
@@ -147,6 +148,17 @@ python3 src/remote/task_2/add_job_steps.py
 ```
 
 You can check the status of the jobs under the UI in AWS Management Console. 
+Once complete, you can run the teardown shell to get rid of the EMR cluster. 
+
+```shell
+zsh src/remote/task_2/setup/4_teardown.sh
+```
+
+### Task 3 
+
+### Conclusions/Areas for Improvment
+
+
 
 
 
