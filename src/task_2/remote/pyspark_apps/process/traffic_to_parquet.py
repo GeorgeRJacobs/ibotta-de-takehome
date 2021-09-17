@@ -26,7 +26,7 @@ def convert_to_parquet(spark, file, args):
 
     df_bakery.write \
         .format("parquet") \
-        .save(f"s3a://{args.silver_bucket}/{args.exec_date}/", mode="overwrite")
+        .save(f"s3a://{args.silver_bucket}/{args.exec_date}/traffic_accidents/", mode="overwrite")
 
 
 def parse_args():
