@@ -1,60 +1,46 @@
-#!/usr/bin/env python3
+import os
 
-import argparse
-
+import boto3
 from pyspark.sql import SparkSession
 
 
 def main():
-    """
-    Conversion logic of our CSVs to Parquet on Spark
-    :return:
-    """
-    args = parse_args()
+    params = get_parameters()
 
     spark = SparkSession \
         .builder \
         .appName("csv-to-parquet") \
         .getOrCreate()
 
-    convert_to_parquet(spark, args.filename, args)
+    convert_to_parquet(spark, "bakery", params)
 
 
-def convert_to_parquet(spark: SparkSession, file: str, args: argparse.Namespace):
-    """
-    Meat of the conversion logic
-    :param spark: Spark Session object.
-    :param file: Filename of the CSV
-    :param args: Additional arguments handling the file creation.
-    :return:
-    """
+def convert_to_parquet(spark, file, params):
     df = spark.read \
         .format("csv") \
         .option("header", "true") \
         .option("delimiter", ",") \
         .option("inferSchema", "true") \
-        .load(f"s3a://{args.bronze_bucket}/{args.execution_date}/{file}")
+        .load(f"s3a://{params['bronze_bucket']}/bakery/{file}.csv")
 
-    df.write \
+    write_parquet(df, params)
+
+
+def write_parquet(df_bakery, params):
+    df_bakery.write \
         .format("parquet") \
-        .save(f"s3a://{args.silver_bucket}/{args.execution_date}/", mode="overwrite")
+        .save(f"s3a://{params['silver_bucket']}/bakery/", mode="overwrite")
 
 
-def parse_args():
-    """
-    Parses the arguments from the command-line.
-    :return:
-    """
+def get_parameters():
+    """Load parameter values from AWS Systems Manager (SSM) Parameter Store"""
 
-    parser = argparse.ArgumentParser(description="Arguments required for script.")
-    # Bronze / Silver bucket notation important for knowing what data
-    parser.add_argument("--file_name", required=True, help="File to convert")
-    parser.add_argument("--execution_date", required=True, help="Execution date of request")
-    parser.add_argument("--bronze-bucket", required=True, help="Raw data location")
-    parser.add_argument("--silver-bucket", required=True, help="Processed data location")
+    params = {
+        'bronze_bucket': ssm_client.get_parameter(Name='/emr_demo/bronze_bucket')['Parameter']['Value'],
+        'silver_bucket': ssm_client.get_parameter(Name='/emr_demo/silver_bucket')['Parameter']['Value']
+    }
 
-    args = parser.parse_args()
-    return args
+    return params
 
 
 if __name__ == "__main__":

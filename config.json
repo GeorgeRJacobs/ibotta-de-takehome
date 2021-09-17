@@ -1,0 +1,8 @@
+{
+  "bronze_bucket": "takehome-staging",
+  "silver_bucket": "takehome-process",
+  "gold_bucket": "takehome-analyzed",
+  "work_bucket": "takehome-work",
+  "logs_bucket": "takehome-logs",
+  "default_region": "us-east-1"
+}

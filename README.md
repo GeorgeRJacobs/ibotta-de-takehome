@@ -134,8 +134,7 @@ up a small AWS EMR cluster to run our data jobs. The primary steps are:
 2. Once started, submit spark job to convert the S3 csv to HDFS as a parquet
    file. 
 
-In order to perform the following commands, it is important you setup a EC2 
-key pair and store somewhere. 
+
 
 
 

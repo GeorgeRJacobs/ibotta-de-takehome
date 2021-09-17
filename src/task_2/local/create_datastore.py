@@ -3,11 +3,34 @@ import logging
 import os
 from pathlib import Path
 from datetime import date
-from dotenv import load_dotenv
+import json
 
-load_dotenv()
 
-logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
+
+def main():
+    """
+    Runs the local logic for processsing our data files.
+    :return:
+    """
+    current_date = date.today().strftime("%Y-%m-%d")
+    params = get_parameters()
+
+    # Create Local Directories - Assumes we are still at the top of the project directory.
+    Path(os.path.join('data', params.get('silver_bucket'))).mkdir(parents=True, exist_ok=True)
+
+    # Write datastore
+    outcome_service = make_queryable_datastore(
+        os.path.join('data', params.get('bronze_bucket'), current_date, 'service_data.csv'),
+        os.path.join('data', params.get('silver_bucket'), current_date, 'service_data.parquet'))
+
+    outcome_traffic = make_queryable_datastore(
+        os.path.join('data', params.get('bronze_bucket'), current_date, 'traffic_accidents.csv'),
+        os.path.join('data', params.get('silver_bucket'), current_date, 'traffic_accidents.parquet'))
+
+    if outcome_service and outcome_traffic:
+        logging.info('Data Load Successful')
+    else:
+        logging.info('Error Loading Data. Check Logs.')
 
 
 def make_queryable_datastore(input_loc: str, output_loc: str) -> bool:
@@ -33,23 +56,21 @@ def make_queryable_datastore(input_loc: str, output_loc: str) -> bool:
     return True
 
 
+def get_parameters() -> dict:
+    """
+    Loads configuration variables for the task.
+    :return:
+    """
+
+    with open('config.json') as f:
+        config = json.load(f)
+        params = {
+            'bronze_bucket': config['bronze_bucket'],
+            'silver_bucket': config['silver_bucket']
+        }
+
+    return params
+
+
 if __name__ == "__main__":
-    current_date = date.today().strftime("%Y-%m-%d")
-    bucket_name = os.getenv('S3_BUCKET_NAME')
-
-    # Create Local Directories - Assumes we are still at the top of the project directory.
-    Path('data/takehome-processed').mkdir(parents=True, exist_ok=True)
-
-    # Write datastore
-    outcome_service = make_queryable_datastore(
-        os.path.join('data', bucket_name + '-raw', current_date, 'service_data.csv'),
-        os.path.join('data', bucket_name + '-processed', current_date, 'service_data.parquet'))
-
-    outcome_traffic = make_queryable_datastore(
-        os.path.join('data', bucket_name + '-raw', current_date, 'traffic_accidents.csv'),
-        os.path.join('data', bucket_name + '-processed', current_date, 'traffic_accidents.parquet'))
-
-    if outcome_service and outcome_traffic:
-        logging.info('Data Load Successful')
-    else:
-        logging.info('Error Loading Data. Check Logs.')
+    main()

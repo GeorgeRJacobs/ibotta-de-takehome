@@ -1,17 +1,11 @@
 #!/bin/zsh
 
-# Source ENV file
-# No whitespaces in naming of vars
-echo
-set -a
-source .env
-set +a
-
 # Create Buckets - creating a log file in case of issues
 # Buckets are public since this is free data. Beware of security issues.
-STAGING=$S3_BUCKET_NAME-staging
+echo "Reading Bronze Bucket"
+STAGING=`cat config.json | python3 -c "import sys, json; print(json.load(sys.stdin)['bronze_bucket'])"`
 
-echo "Creating bucket "$STAGING""
+echo "Creating bucket "$BUCKET""
 aws s3api create-bucket --acl public-read-write --bucket $STAGING --output text > setup.log
 
 # Stream (Pipe) Data from Curl to new S3 Bucket

@@ -1,0 +1,36 @@
+[
+  {
+    "Name": "Service CSV to Parquet",
+    "ActionOnFailure": "CONTINUE",
+    "HadoopJarStep": {
+      "Jar": "command-runner.jar",
+      "Args": [
+        "spark-submit",
+        "--deploy-mode",
+        "cluster",
+        "--master",
+        "yarn",
+        "--conf",
+        "spark.yarn.submit.waitAppCompletion=true",
+        "s3a://{{ work_bucket }}/process/csv_to_parquet.py"
+      ]
+    }
+  },
+  {
+    "Name": "Traffic CSV to Parquet",
+    "ActionOnFailure": "CONTINUE",
+    "HadoopJarStep": {
+      "Jar": "command-runner.jar",
+      "Args": [
+        "spark-submit",
+        "--deploy-mode",
+        "cluster",
+        "--master",
+        "yarn",
+        "--conf",
+        "spark.yarn.submit.waitAppCompletion=true",
+        "s3a://{{ work_bucket }}/process/movies_csv_to_parquet_ssm.py"
+      ]
+    }
+  },
+]
