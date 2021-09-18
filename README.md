@@ -63,11 +63,12 @@ settings.
 NOTE: All code expects the working directory set to the project. As mentioned
 above, it is a good idea to create a virtual env to run project code.
 
-NOTE2: The shell code assumes you are on the newer Z shell (Like a newer Mac). 
+NOTE2: The shell code assumes you are on the newer Z shell (Like a newer Mac).
 
-Under the src directory, There will be 2 sets of files which you can run, 
-local & remote. Under each, I have a directory for each task. These showcase 
-how I would use these tools both in a local capacity and as well using cloud technologies.
+Under the src directory, There will be 2 sets of files which you can run, local
+& remote. Under each, I have a directory for each task. These showcase how I
+would use these tools both in a local capacity and as well using cloud
+technologies.
 
 #### Local:
 
@@ -76,13 +77,13 @@ zsh src/task_1/local/dl_local.sh
 ```
 
 This will download the datasets to your local machine under the
-`/data/takehome-staging` directory. 
+`/data/takehome-staging` directory.
 
 #### Remote:
 
 The remote version of this code would instead of sending this data to our local
-machine place itself into an S3 bucket. Under the `config.json` you can find 
-the naming convention used by this project. 
+machine place itself into an S3 bucket. Under the `config.json` you can find the
+naming convention used by this project.
 
 ```shell
 zsh src/task_1/local/stream_to_s3.sh
@@ -124,65 +125,90 @@ threads to process your application.
 The primary difference of the remote implementation is that we will be setting
 up a small AWS EMR cluster to run our data jobs. The primary steps are:
 
-1. Create & setup an EMR cluster on AWS. This takes ~10 min to start up. 
+1. Create & setup an EMR cluster on AWS. This takes ~10 min to start up.
 2. Create additional buckets to hold logs and our pyspark scripts.
-3. Submit the pyspark scripts to our running EMR cluster. 
-4. Shut down the EMR when the transforms are complete. 
+3. Submit the pyspark scripts to our running EMR cluster.
+4. Shut down the EMR when the transforms are complete.
 
-I've combined the setup steps (1-3) into a helper shell script. 
+I've combined the setup steps (1-3) into a helper shell script.
+
 ```shell
 zsh src/remote/task_2/setup/setup.sh
 ```
 
-Once the setup is complete, you can go ahead and send our jobs to the EMR 
-cluster. 
+Once the setup is complete, you can go ahead and send our jobs to the EMR
+cluster.
 
 ```shell
 python3 src/remote/task_2/add_job_steps.py
 ```
 
-You can check the status of the jobs under the UI in AWS Management Console. 
-Once complete, you can run the teardown shell to get rid of the EMR cluster. 
+You can check the status of the jobs under the UI in AWS Management Console.
+Once complete, you can run the teardown shell to get rid of the EMR cluster.
 
 ```shell
 zsh src/remote/task_2/setup/4_teardown.sh
 ```
 
-### Task 3 
+### Task 3
 
-The final task is query our datasets and provide insights into the data. 
+The final task is query our datasets and provide insights into the data. Our
+analysis aims to answer these 4 questions:
+
+1. Do the amount of traffic accidents vary over a given year? Do they show
+   seasonality?
+2. Does that also correlate with road conditions? What times of year are
+   better/worse?
+3. What geographical areas do 311 Service Calls occur in?
+4. Do these translate to a similar number of traffic accidents?
 
 #### Local
 
+The local version of this report is very straightforward. Saved to the
+`src/local/task_3` directory is an example analysis of these questions using
+Jupyter. The spark implementation here is using a local spark instance to 
+run the analysis code. 
+
+A pattern you see in this notebook with pyspark is using spark SQL
+notation to aggregate the large amount of data efficiently into tabular formats
+useful for analysis. From there, you convert them to more data science friendly
+format for general visualization. To launch, run the shell code below to 
+open jupyter lab. From there, you can click on the report in your browser 
+and run the analysis. The report assumes that the requirements.txt file has 
+been run. 
+
+```shell
+jupyter notebook 
+```
+
 #### Remote
 
-The remote version of this code requires a bit more work to set up. AWS EMR 
-allows the user to setup a jupyter notebook remotely along with the creation 
-of the basic nodes. Included is an option to make jupyter notebooks persistent. 
+The remote version of this code requires a bit more work to set up. AWS EMR
+allows the user to setup a jupyter notebook remotely along with the creation of
+the basic nodes. Included is an option to make jupyter notebooks persistent.
 
 ### Conclusions/Areas for Improvement
 
-#### Scheduling 
+#### Scheduling
 
-Typically, if you are going to be pulling from an API more than once you 
-will want to have a scheduling service involved. This allows you to get the 
-latest data and to improve idempotency. In this project, a simple extension 
-would be to use **AWS Lambda** functions. These serverless functions are ideal 
-for interacting with APIs without setting up infrastructure. More robust 
-would be an **Apache Airflow** instance.  
+Typically, if you are going to be pulling from an API more than once you will
+want to have a scheduling service involved. This allows you to get the latest
+data and reduce errors / data duplication. In this project, a simple extension
+would be to use **AWS Lambda** functions. These serverless functions are ideal
+for interacting with APIs without the hassle of setting up infrastructure. AN
+even more robust scheduling service implementation would be an **Apache
+Airflow** instance. Though you would need to set up a server, Airflow's benefit
+is in the DAG oriented nature of building pipelines with support for jinja
+templating.
 
-#### Step Functions
+#### Plotting
 
-Related to scheduling, AWS Step functions make it easy to build state 
-machines of EMR steps. You can visualize work, and make it relatively 
-painless to build larger pipelines
-
-#### Data Analytics
-
-Here we are using Jupyter notebooks to demonstrate our analyses and package 
-them for other analysts to use. While relatively easy to use, a more robust 
-dash boarding system would be necessary to make the analyses reproducible. 
-Example include Tableau, Mode, and AWS Quicksight.  
+One potential problem with Pyspark is that it does not natively support plotting
+RDD objects. A workaround which I demonstrate in the Jupyter notebook is to
+convert aggregated datasets to Pandas dataframes and using the traditional
+plotting packages. A potential upgrade would be to use something like Plotly. It
+supports integration with Pyspark Dataframe. More info can be
+found [here](https://plotly.com/python/v3/apache-spark/)
 
 
 
