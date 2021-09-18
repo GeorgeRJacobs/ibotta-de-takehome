@@ -152,10 +152,38 @@ zsh src/remote/task_2/setup/4_teardown.sh
 
 The final task is query our datasets and provide insights into the data. 
 
+#### Local
+
+#### Remote
+
+The remote version of this code requires a bit more work to set up. AWS EMR 
+allows the user to setup a jupyter notebook remotely along with the creation 
+of the basic nodes. Included is an option to make jupyter notebooks persistent. 
+
 ### Conclusions/Areas for Improvement
 
-The major area for improvement on this project would be to use some kind of 
-scheduling service to make this 
+#### Scheduling 
+
+Typically, if you are going to be pulling from an API more than once you 
+will want to have a scheduling service involved. This allows you to get the 
+latest data and to improve idempotency. In this project, a simple extension 
+would be to use **AWS Lambda** functions. These serverless functions are ideal 
+for interacting with APIs without setting up infrastructure. More robust 
+would be an **Apache Airflow** instance.  
+
+#### Step Functions
+
+Related to scheduling, AWS Step functions make it easy to build state 
+machines of EMR steps. You can visualize work, and make it relatively 
+painless to build larger pipelines
+
+#### Data Analytics
+
+Here we are using Jupyter notebooks to demonstrate our analyses and package 
+them for other analysts to use. While relatively easy to use, a more robust 
+dash boarding system would be necessary to make the analyses reproducible. 
+Example include Tableau, Mode, and AWS Quicksight.  
+
 
 
 
