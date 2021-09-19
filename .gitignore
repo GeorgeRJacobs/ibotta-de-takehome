@@ -2,5 +2,6 @@
 *.csv
 .idea
 *.pem
+*.log
 /cluster_profile.txt
 /cluster_profile.json
