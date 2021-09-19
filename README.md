@@ -174,18 +174,16 @@ notation to aggregate the large amount of data efficiently into tabular formats
 useful for analysis. From there, you convert them to more data science friendly
 format for general visualization. To launch, run the shell code below to 
 open jupyter lab. From there, you can click on the report in your browser 
-and run the analysis. The report assumes that the requirements.txt file has 
-been run. 
+and run the analysis. 
 
 ```shell
-jupyter notebook 
+jupyter notebook src/local/task_3/analysis.ipynb
 ```
 
 #### Remote
 
-The remote version of this code requires a bit more work to set up. AWS EMR
-allows the user to setup a jupyter notebook remotely along with the creation of
-the basic nodes. Included is an option to make jupyter notebooks persistent.
+
+
 
 ### Conclusions/Areas for Improvement
 
