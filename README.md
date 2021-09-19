@@ -166,21 +166,72 @@ analysis aims to answer these 4 questions:
 
 The local version of this report is very straightforward. Saved to the
 `src/local/task_3` directory is an example analysis of these questions using
-Jupyter. The spark implementation here is using a local spark instance to 
-run the analysis code. 
+Jupyter. The spark implementation here is using a local spark instance to run
+the analysis code.
 
-A pattern you see in this notebook with pyspark is using spark SQL
-notation to aggregate the large amount of data efficiently into tabular formats
-useful for analysis. From there, you convert them to more data science friendly
-format for general visualization. To launch, run the shell code below to 
-open jupyter lab. From there, you can click on the report in your browser 
-and run the analysis. 
+A pattern you see in this notebook with pyspark is using spark SQL notation to
+aggregate the large amount of data efficiently into tabular formats useful for
+analysis. From there, you convert them to more data science friendly format for
+general visualization. To launch, run the shell code below to open jupyter lab.
+From there, you can click on the report in your browser and run the analysis.
 
 ```shell
 jupyter notebook src/local/task_3/analysis.ipynb
 ```
 
 #### Remote
+
+##### Introduction
+There are many options for running an analysis against a given Spark cluster.
+Given that we need to be able to scale our analyses in order to query against
+data running on our S3 buckets as well as using a remote EMR clusters, I chose
+to implement a jupyter notebook locally which sends commands to the cluster and
+returns data and visualizations back to our local notebook.
+
+The notebook uses a tool
+called [Spark Magic](https://github.com/jupyter-incubator/sparkmagic) to
+seamlessly send spark commands from a local notebook to a remote cluster. This
+allows to very quickly scale up their analysis in the case they need to query a
+remote source for data.
+
+The main reason against such my approach is that the setup requires a bit of
+work and technical knowledge from the user. The user is required to have SSH
+access to a given EMR cluster. This is possible in certain organizations which
+can sandbox these instances with the right permissions and with more technical
+audiences. However, I could foresee less technically oriented analysts having
+trouble.
+
+Given that this project is meant to showcase querying big data, I felt this was
+a necessary trade-off in order to show how a technical user might write 
+real-world production code and share analyses. An extension of this approach 
+would be Qubole's notebook interface. They make it very straightforward to 
+run jupyter notebooks in conjunction with Spark clusters. 
+
+##### How to Run
+
+First, you will need to run the setup script. 
+
+```shell
+src/remote/task_3/setup/setup.sh
+```
+
+This will:
+1. Create a key-value pair 
+2. Start a new AWS EMR cluster loaded with Livy to enable remote analysis
+3. Download, and install SparkMagic which will enable local jupyter 
+   notebooks to interact with the cluster
+4. Enable port forwarding to connect the notebook to the EMR cluster
+
+You will need to leave this terminal window running while interacting with 
+the jupyter notebook. In a separate window, you can run the command below to 
+open the analysis notebook. 
+
+```shell
+jupyter notebook src/remote/task_3/analysis/analysis.ipynb
+```
+
+
+
 
 
 

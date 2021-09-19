@@ -1,3 +1,5 @@
+#!/bin/zsh
+
 echo "Creating EMR Cluster"
 
 aws emr create-cluster --applications Name=Spark Name=Zeppelin \

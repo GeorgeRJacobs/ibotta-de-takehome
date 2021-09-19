@@ -1,5 +1,6 @@
 *.parquet
 *.csv
 .idea
+*.pem
 /cluster_profile.txt
 /cluster_profile.json
