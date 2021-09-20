@@ -65,7 +65,7 @@ logic flow matching the brief.
 
 ### Requirements.txt
 
-Install required Python packages. 
+Install required Python packages.
 
 ```shell
 pip install -r requirements.txt
@@ -74,8 +74,9 @@ pip install -r requirements.txt
 ## Tasks
 
 NOTE: All code expects the working directory set to the project. As mentioned
-above, it is a good idea to create a virtual env to run project code. NOTE2: The
-shell code assumes you are on the newer Z shell (Like a newer Mac).
+above, it is a good idea to create a virtual env to run project code.
+
+NOTE2: The shell code assumes you are on the newer `zsh`.
 
 ### Task 1
 
@@ -202,9 +203,8 @@ This will:
 3. Enable port forwarding to connect the notebook to the EMR cluster
 
 You will need to leave this terminal window running while interacting with the
-jupyter notebook. In a **separate terminal**, you can run the command 
-below
-to open the analysis notebook.
+jupyter notebook. In a **separate terminal**, you can run the command below to
+open the analysis notebook.
 
 ```shell
 jupyter notebook src/remote/task_3/analysis/spark_analysis.ipynb
@@ -237,7 +237,8 @@ Jupyter is great for sharing analyses between data analysts. However, as was
 showcased here, it takes a bit of work to set up an appropriate environment. In
 a company environment where resources would be shared, I could foresee using a
 centralized service such as Databricks which combines computation with a
-notebook environment making sharing relatively painless. ](https://github.com/jupyter-incubator/sparkmagic)
+notebook environment making sharing relatively
+painless. ](https://github.com/jupyter-incubator/sparkmagic)
 
 
 
