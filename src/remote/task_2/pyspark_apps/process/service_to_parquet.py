@@ -5,7 +5,11 @@ import argparse
 from pyspark.sql import SparkSession
 
 
-def main():
+def main() -> None:
+    """
+    Main Spark application. Converts csv files to parquet with optional arguments.
+    :return: None
+    """
     args = parse_args()
 
     spark = SparkSession \
@@ -16,7 +20,14 @@ def main():
     convert_to_parquet(spark, "service_data", args)
 
 
-def convert_to_parquet(spark, file, args):
+def convert_to_parquet(spark: SparkSession, file: str, args: argparse.Namespace) -> None:
+    """
+    Given a live spark session, load data file from S3 & convert.
+    :param spark: Live SparkSession
+    :param file: filename for the incoming CSVs
+    :param args: Additional arguments such S3 bucket location
+    :return:
+    """
     df = spark.read \
         .format("csv") \
         .option("header", "true") \
