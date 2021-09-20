@@ -233,13 +233,22 @@ jupyter notebook. In a separate window, you can run the command below to open
 the analysis notebook.
 
 ```shell
-jupyter notebook src/remote/task_3/analysis/analysis.ipynb
+jupyter notebook src/remote/task_3/analysis/spark_analysis.ipynb
 ```
 
 The notebook has been updated to include spark magic related commands similar to
 the 'local' copy.
 
-### Conclusions/Areas for Improvement
+### Conclusion
+
+Included is a teardown script. Run this script to: 
+1. Stop running EMR clusters
+2. Delete takehome project buckets
+3. 
+
+```shell
+zsh takedown.sh
+```
 
 #### Scheduling
 
