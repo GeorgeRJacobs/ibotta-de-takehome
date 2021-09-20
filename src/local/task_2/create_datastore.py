@@ -6,7 +6,6 @@ from datetime import date
 import json
 
 
-
 def main():
     """
     Runs the local logic for processsing our data files.
@@ -18,12 +17,20 @@ def main():
     # Create Local Directories - Assumes we are still at the top of the project directory.
     Path(os.path.join('data', params.get('silver_bucket'))).mkdir(parents=True, exist_ok=True)
 
+    # Create SparkSession
+    spark = SparkSession \
+        .builder \
+        .appName('Convert CSV to Parquet') \
+        .getOrCreate()
+
     # Write datastore
     outcome_service = make_queryable_datastore(
+        spark,
         os.path.join('data', params.get('bronze_bucket'), current_date, 'service_data.csv'),
         os.path.join('data', params.get('silver_bucket'), current_date, 'service_data.parquet'))
 
     outcome_traffic = make_queryable_datastore(
+        spark,
         os.path.join('data', params.get('bronze_bucket'), current_date, 'traffic_accidents.csv'),
         os.path.join('data', params.get('silver_bucket'), current_date, 'traffic_accidents.parquet'))
 
@@ -33,15 +40,15 @@ def main():
         logging.info('Error Loading Data. Check Logs.')
 
 
-def make_queryable_datastore(input_loc: str, output_loc: str) -> bool:
+def make_queryable_datastore(spark: SparkSession, input_loc: str, output_loc: str) -> bool:
     """
     Converts DL'd file to parquet format using Pyspark.
+    :param spark: Spark Session
     :param input_loc: Raw Data file location
     :param output_loc: Output file location
     :return: True if successful otherwise False with logged Error
     """
     try:
-        spark = SparkSession.builder.appName('Convert CSV to Parquet').getOrCreate()
         logging.info('Spark Session Created')
         data = spark.read.option('header', True).format("csv").load(input_loc)
         # Clean up the column names for parquet

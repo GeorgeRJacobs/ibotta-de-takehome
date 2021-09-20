@@ -43,7 +43,7 @@ def convert_to_parquet(spark: SparkSession, file: str, args: argparse.Namespace)
         .save(f"s3a://{args.silver_bucket}/{args.exec_date}/traffic_accidents/", mode="overwrite")
 
 
-def parse_args():
+def parse_args() -> argparse.Namespace:
     """Parse argument values from command-line"""
 
     parser = argparse.ArgumentParser(description="Arguments required for script.")
