@@ -93,7 +93,7 @@ local. Under the `config.json` you can find the naming convention used by this
 project.
 
 ```shell
-zsh src/task_1/local/stream_to_s3.sh
+zsh src/remote/task_1/stream_to_s3.sh
 ```
 
 ### Task 2
@@ -137,7 +137,7 @@ Once the setup is complete, you can go ahead and submit our jobs to the EMR
 cluster. You can monitor the jobs under the AWS management console.
 
 ```shell
-python3 src/remote/task_2/add_job_steps.py
+python3 src/remote/task_2/add_job_steps.py --job-type process
 ```
 
 ### Task 3
@@ -194,7 +194,8 @@ This will:
 3. Enable port forwarding to connect the notebook to the EMR cluster
 
 You will need to leave this terminal window running while interacting with the
-jupyter notebook. In a separate terminal window, you can run the command below
+jupyter notebook. In a **separate terminal**, you can run the command 
+below
 to open the analysis notebook.
 
 ```shell
@@ -210,7 +211,7 @@ Included is a teardown script. Run this script to:
 3. Delete the key pair we created earlier.
 
 ```shell
-zsh takedown.sh
+zsh src/teardown.sh
 ```
 
 ### Potential Updates

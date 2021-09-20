@@ -1,5 +1,5 @@
 echo "Grabbing DNS"
-EMR_CLUSTER_ID=$(aws emr list-clusters --cluster-states WAITING --query 'Clusters[?Name==`detakehome_analyze`].Id' --output text)
+EMR_CLUSTER_ID=$(aws emr list-clusters --cluster-states WAITING --query 'Clusters[?Name==`detakehome`].Id' --output text)
 MASTER_DNS=$(aws emr describe-cluster --cluster-id $EMR_CLUSTER_ID --query 'Cluster.MasterPublicDnsName' --output text)
 
 echo "Starting Port Forwarding. Keep terminal open until analysis is complete."

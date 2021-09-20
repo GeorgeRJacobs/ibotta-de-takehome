@@ -3,6 +3,14 @@
 echo "Creating Persistent Jupyter Storage"
 aws s3api create-bucket --acl public-read-write --bucket detakehomenotebooks --output text > setup.log
 
+echo "Creating DE Takehome Key Pair - Will be deleted in teardown"
+aws ec2 create-key-pair \
+    --key-name DE_TAKEHOME_ANALYSIS \
+    --key-type rsa \
+    --query "KeyMaterial" \
+    --output text > DE_TAKEHOME_ANALYSIS.pem
+chmod 400 DE_TAKEHOME_ANALYSIS.pem
+
 echo "Installing JQ if not available (Assuming Macs)"
 brew list jq || brew install jq
 
@@ -29,17 +37,10 @@ aws emr create-cluster \
 --name 'detakehome' \
 --instance-groups '[{"InstanceCount":1,"EbsConfiguration":{"EbsBlockDeviceConfigs":[{"VolumeSpecification":{"SizeInGB":32,"VolumeType":"gp2"},"VolumesPerInstance":2}]},"InstanceGroupType":"MASTER","InstanceType":"m5.xlarge","Name":"Master - 1"},{"InstanceCount":2,"EbsConfiguration":{"EbsBlockDeviceConfigs":[{"VolumeSpecification":{"SizeInGB":32,"VolumeType":"gp2"},"VolumesPerInstance":2}]},"InstanceGroupType":"CORE","InstanceType":"m5.xlarge","Name":"Core - 2"}]' \
 --scale-down-behavior TERMINATE_AT_TASK_COMPLETION \
---region us-east-1 \
---bootstrap-actions Path=s3://takehome-work/reqs.sh,Name=AnalyticLibraries > cluster_profile.json
+--region us-east-1  > cluster_profile.json
 
 echo "Wait for Cluster Startup ~10 min"
 EMR_CLUSTER_ID=$(aws emr list-clusters --cluster-states STARTING --query 'Clusters[?Name==`detakehome`].Id' --output text)
 aws emr wait cluster-running --cluster-id $EMR_CLUSTER_ID
-
-echo "Cluster ID Profile Variable"
-cat cluster_profile.txt | python3 -c "import sys, json; print(json.load(sys.stdin)['ClusterId'])"
-
-echo "Cluster ARN"
-cat cluster_profile.txt | python3 -c "import sys, json; print(json.load(sys.stdin)['ClusterArn'])"
 
 

@@ -2,7 +2,7 @@
 
 # Create Buckets - creating a log file in case of issues
 # Buckets are public since this is free data. Beware of security issues.
-echo "Reading Bronze Bucket"
+echo "Reading Bucket Name"
 STAGING=`cat config.json | python3 -c "import sys, json; print(json.load(sys.stdin)['bronze_bucket'])"`
 
 echo "Creating bucket "$BUCKET""

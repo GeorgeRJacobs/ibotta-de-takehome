@@ -20,8 +20,8 @@ def main():
     # Loads most recent cluster created
     # Requires the start_emr script to run.
     clusters = emr_client.list_clusters(CreatedAfter=datetime.datetime.today(),
-                                        ClusterStates=['RUNNING'])
-    cluster_id = [cluster for cluster in clusters.get('Clusters') if cluster.get('Name') == 'detakehome_process'][
+                                        ClusterStates=['WAITING', 'RUNNING'])
+    cluster_id = [cluster for cluster in clusters.get('Clusters') if cluster.get('Name') == 'detakehome'][
         0].get('Id')
 
     args = parse_args()

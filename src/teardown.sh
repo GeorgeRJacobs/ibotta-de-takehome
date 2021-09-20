@@ -13,7 +13,7 @@ aws s3 rm s3://$1-clean-data --recursive --output text >> tear_down.log
 aws s3api delete-bucket --bucket $1-clean-data --output text >> tear_down.log
 
 echo "Tearing down EMR cluster"
-EMR_CLUSTER_ID=$(aws emr list-clusters --active --query 'Clusters[?Name==`sde-lambda-etl-cluster`].Id' --output text)
+EMR_CLUSTER_ID=$(aws emr list-clusters --active --query 'Clusters[?Name==`detakehome`].Id' --output text)
 aws emr terminate-clusters --cluster-ids $EMR_CLUSTER_ID >> tear_down.log
 
 echo "Deleting Key Pair"
