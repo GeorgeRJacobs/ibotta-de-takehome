@@ -1,6 +1,5 @@
 #!/bin/zsh
 
-
 echo "Deleting bucket "$1"-script and its contents"
 aws s3 rm s3://$1-script --recursive --output text >> tear_down.log
 aws s3api delete-bucket --bucket $1-script --output text >> tear_down.log
@@ -17,20 +16,13 @@ echo "Tearing down EMR cluster"
 EMR_CLUSTER_ID=$(aws emr list-clusters --active --query 'Clusters[?Name==`sde-lambda-etl-cluster`].Id' --output text)
 aws emr terminate-clusters --cluster-ids $EMR_CLUSTER_ID >> tear_down.log
 
-echo "deleting lambda function"
-aws lambda remove-permission --function-name emrTrigger --statement-id s3invoke --output text >> tear_down.log
-aws lambda delete-function --function-name emrTrigger --output text >> tear_down.log
+echo "Waiting for Teardown of EMR"
+EMR_CLUSTER_ID=$(aws emr list-clusters --cluster-states STARTING --query 'Clusters[?Name==`detakehome`].Id' --output text)
+aws emr wait cluster-running --cluster-id $EMR_CLUSTER_ID
 
-echo "delete lambda role"
-aws iam detach-role-policy --role-name lambda-s3-role --policy-arn arn:aws:iam::$AWS_ID:policy/AWSLambdaS3Policy --output text >> tear_down.log
-aws iam detach-role-policy --role-name lambda-s3-role --policy-arn arn:aws:iam::aws:policy/AmazonEMRFullAccessPolicy_v2 --output text >> tear_down.log
-aws iam delete-role --role-name lambda-s3-role --output text >> tear_down.log
+echo "Deleting Key Pair"
+aws ec2 delete-key-pair --key-name DE_TAKEHOME_ANALYSIS
 
-echo "delete lambda policy"
-aws iam delete-policy --policy-arn arn:aws:iam::$AWS_ID:policy/AWSLambdaS3Policy --output text >> tear_down.log
 
 rm -f setup.log
-rm -f ./*.json
 rm -f tear_down.log
-rm -f policy
-rm -f myDeploymentPackage.zip

@@ -1,7 +1,7 @@
 echo "Creating Persistent Jupyter Storage"
 aws s3api create-bucket --acl public-read-write --bucket detakehomenotebooks --output text > setup.log
 
-echo "Installing JQ if not available"
+echo "Installing JQ if not available (Assuming Macs)"
 brew list jq || brew install jq
 
 echo "Opening Port Forwarding"
@@ -13,12 +13,6 @@ aws ec2 authorize-security-group-ingress \
     --protocol tcp \
     --port 22 \
     --cidr $(curl ipinfo.io/ip)/32 > port_forwarding.log
-
-echo "Sending Requirements to EMR Cluster"
-aws s3 cp reqs.sh s3://takehome-work/reqs.sh
-
-ssh -i DE_TAKEHOME_ANALYSIS.pem -ND 8157 hadoop@ec2-3-234-244-44.compute-1.amazonaws.com
-
 
 echo "Creating EMR Cluster w/ Jupyter Notebooks Access"
 aws emr create-cluster \
