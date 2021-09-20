@@ -10,7 +10,7 @@ aws s3 rm s3://detakehomenotebooks --recursive --output text >> tear_down.log
 aws s3api delete-bucket --bucket detakehomenotebooks --output text >> tear_down.log
 
 aws s3 rm s3://$LOGS --recursive --output text >> tear_down.log
-aws s3api delete-bucket --bucket $LOGS--output text >> tear_down.log
+aws s3api delete-bucket --bucket $LOGS --output text >> tear_down.log
 
 aws s3 rm s3://$PROCESS --recursive --output text >> tear_down.log
 aws s3api delete-bucket --bucket $PROCESS --output text >> tear_down.log
@@ -37,3 +37,4 @@ rm -f cluster_profile.json
 rm -f port_forwarding.log
 rm -r data/takehome-process/$exec_date
 rm -r data/takehome-staging/$exec_date
+rm -f DE_TAKEHOME_ANALYSIS.pem

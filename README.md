@@ -233,7 +233,7 @@ scheduling service such as Apache Airflow. We avoided it for this project since
 the data is relatively straightforward. The main benefit would be parameterizing
 the jobs and reducing potential mistakes.
 
-#### Analysis Framework[
+#### Analysis Framework
 
 Jupyter is great for sharing analyses between data analysts. However, as was
 showcased here, it takes a bit of work to set up an appropriate environment. In
@@ -242,6 +242,23 @@ centralized service such as Databricks which combines computation with a
 notebook environment making sharing relatively
 painless. ](https://github.com/jupyter-incubator/sparkmagic)
 
+#### Testing
+
+The current pipeline assumes the data is correct and will always be the same
+going forward. However, in the real world that is not always the case. A more
+robust project would include tests on the data from Denver.gov. The 3 main
+testing areas would be:
+
+1. End-to-End system testing
+    1. Given a sample set of data, does the pipeline match expected output.
+    2. Is run outside of the normal pipeline logic.
+2. Data quality testing
+    1. Check data output against business rules.
+    2. Occurs in pipeline every time.
+3. Alerting / Monitoring
+    1. Implement logging of the pipeline to monitor data quality statistics.
+    2. Examples include datadog, or could even be used with something like
+       Metabase with a database of logs. 
 
 
 
