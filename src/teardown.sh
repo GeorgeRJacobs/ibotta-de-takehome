@@ -1,20 +1,25 @@
 #!/bin/zsh
 
+STAGING=`cat config.json | python3 -c "import sys, json; print(json.load(sys.stdin)['bronze_bucket'])"`
+PROCESS=`cat config.json | python3 -c "import sys, json; print(json.load(sys.stdin)['silver_bucket'])"`
+LOGS=`cat config.json | python3 -c "import sys, json; print(json.load(sys.stdin)['logs_bucket'])"`
+WORK=`cat config.json | python3 -c "import sys, json; print(json.load(sys.stdin)['work_bucket'])"`
+
 echo "Deleting buckets"
 aws s3 rm s3://detakehomenotebooks --recursive --output text >> tear_down.log
 aws s3api delete-bucket --bucket detakehomenotebooks --output text >> tear_down.log
 
-aws s3 rm s3://takehome-logs --recursive --output text >> tear_down.log
-aws s3api delete-bucket --bucket takehome-logs --output text >> tear_down.log
+aws s3 rm s3://$LOGS --recursive --output text >> tear_down.log
+aws s3api delete-bucket --bucket $LOGS--output text >> tear_down.log
 
-aws s3 rm s3://takehome-process --recursive --output text >> tear_down.log
-aws s3api delete-bucket --bucket takehome-process --output text >> tear_down.log
+aws s3 rm s3://$PROCESS --recursive --output text >> tear_down.log
+aws s3api delete-bucket --bucket $PROCESS --output text >> tear_down.log
 
-aws s3 rm s3://takehome-staging --recursive --output text >> tear_down.log
-aws s3api delete-bucket --bucket takehome-staging --output text >> tear_down.log
+aws s3 rm s3://$STAGING --recursive --output text >> tear_down.log
+aws s3api delete-bucket --bucket $STAGING --output text >> tear_down.log
 
-aws s3 rm s3://takehome-work --recursive --output text >> tear_down.log
-aws s3api delete-bucket --bucket takehome-work --output text >> tear_down.log
+aws s3 rm s3://$WORK --recursive --output text >> tear_down.log
+aws s3api delete-bucket --bucket $WORK --output text >> tear_down.log
 
 echo "Tearing down EMR cluster"
 EMR_CLUSTER_ID=$(aws emr list-clusters --active --query 'Clusters[?Name==`detakehome`].Id' --output text)

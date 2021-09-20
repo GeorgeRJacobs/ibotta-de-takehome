@@ -33,7 +33,8 @@ This is a perfect use-case for Spark for a few reasons:
 1. Apache Spark (Setup to follow)
 2. git
 3. Python 3.x
-4. Optional (If following remote code)
+4. zsh
+5. Optional (If following remote code)
     1. AWS Account
     2. AWS CLI Configured
 
@@ -123,17 +124,18 @@ spark-submit --master "local[3]" src/local/task_2/create_datastore.py
 
 Running the above code in your terminal will transform both files in parquet
 format optimized for Spark. One note here is that `local[3]` will use 3 parallel
-threads to process your application. Low powered machine may need to change that
-setting.
+threads to process your application. Low powered machines may need to change
+that setting.
 
 #### Remote
 
 The primary difference of the remote implementation is that we will be setting
 up a small AWS EMR cluster to run our data jobs. The primary steps are:
 
-1. Create & setup the EMR cluster on AWS. This takes ~10 min to start up.
-2. Create additional buckets to hold logs and our pyspark scripts.
-3. Submit the pyspark scripts to our running EMR cluster.
+1. Create additional buckets to hold logs and our pyspark scripts.
+2. Setting up Key Pair for use with the project.
+3. Create & setup the EMR cluster on AWS. This takes ~10 min to start up.
+4. Submit the pyspark scripts to our running EMR cluster.
 
 I've combined the setup steps (1-3) into a helper shell script. We'll keep the
 EMR cluster running for now as it will be used in the final task.

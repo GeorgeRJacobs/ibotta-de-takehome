@@ -1,8 +1,5 @@
 #!/bin/zsh
 
-echo "Creating Persistent Jupyter Storage"
-aws s3api create-bucket --acl public-read-write --bucket detakehomenotebooks --output text > setup.log
-
 echo "Creating DE Takehome Key Pair - Will be deleted in teardown"
 aws ec2 create-key-pair \
     --key-name DE_TAKEHOME_ANALYSIS \
@@ -14,7 +11,7 @@ chmod 400 DE_TAKEHOME_ANALYSIS.pem
 echo "Installing JQ if not available (Assuming Macs)"
 brew list jq || brew install jq
 
-echo "Opening Port Forwarding"
+echo "Opening Port Forwarding on Machine"
 export EMR_MASTER_SG_ID=$(aws ec2 describe-security-groups | \
     jq -r '.SecurityGroups[] | select(.GroupName=="ElasticMapReduce-master").GroupId')
 
@@ -24,7 +21,7 @@ aws ec2 authorize-security-group-ingress \
     --port 22 \
     --cidr $(curl ipinfo.io/ip)/32 > port_forwarding.log
 
-echo "Creating EMR Cluster w/ Jupyter Notebooks Access"
+echo "Creating EMR Cluster w/ Livy Server & Spark"
 aws emr create-cluster \
 --auto-scaling-role EMR_AutoScaling_DefaultRole \
 --applications Name=Hadoop Name=Hive Name=Livy Name=Spark \
