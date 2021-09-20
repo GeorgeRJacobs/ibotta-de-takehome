@@ -63,6 +63,14 @@ accomplish each task on your local computer or in the cloud.
 Each version includes a directory for tasks 1-3 making it easy to understand the
 logic flow matching the brief.
 
+### Requirements.txt
+
+Install required Python packages. 
+
+```shell
+pip install -r requirements.txt
+```
+
 ## Tasks
 
 NOTE: All code expects the working directory set to the project. As mentioned
@@ -79,7 +87,7 @@ python could be used to perform the same operation.
 #### Local:
 
 ```shell
-zsh src/task_1/local/dl_local.sh
+zsh src/local/task_1/dl_local.sh
 ```
 
 This will download the datasets to your local machine under the
@@ -109,7 +117,7 @@ Our local implementation uses Spark to convert the data files into parquet files
 located within `data/takehome-process`.
 
 ```zsh
-spark-submit --master "local[3]" src/task_2/local/create_datastore.py
+spark-submit --master "local[3]" src/local/task_2/create_datastore.py
 ```
 
 Running the above code in your terminal will transform both files in parquet

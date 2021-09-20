@@ -24,6 +24,11 @@ aws emr terminate-clusters --cluster-ids $EMR_CLUSTER_ID >> tear_down.log
 echo "Deleting Key Pair"
 aws ec2 delete-key-pair --key-name DE_TAKEHOME_ANALYSIS
 
-
+echo "Removing Local files (in Project)"
+exec_date=$(date '+%Y-%m-%d')
 rm -f setup.log
 rm -f tear_down.log
+rm -f cluster_profile.json
+rm -f port_forwarding.log
+rm -r data/takehome-process/$exec_date
+rm -r data/takehome-staging/$exec_date
