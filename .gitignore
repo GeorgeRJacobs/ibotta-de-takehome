@@ -5,3 +5,4 @@
 *.log
 /cluster_profile.txt
 /cluster_profile.json
+/src/remote/task_3/analysis/.ipynb_checkpoints/
